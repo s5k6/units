@@ -1,0 +1,6 @@
+#!/bin/bash
+set -u -e -C
+shopt -s failglob
+
+git clone 'https://github.com/s5k6/robust-int'
+git clone 'https://github.com/s5k6/shuntingYard'
