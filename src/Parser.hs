@@ -2,9 +2,11 @@ module Parser ( parse ) where
 
 import Data.Functor.Identity ( Identity )
 import Text.Parsec hiding ( parse )
+import Text.ParserCombinators.Parsec.Number ( floating2 )
 import Data.RobustInt.Parsec ( bounded )
 import ShuntingYard
 import AST
+import qualified Data.Map as M
 
 
 
@@ -61,22 +63,36 @@ bracketed p = lexeme (char '[') *> p <* lexeme (char ']')
 
 uspec :: Parser Unit
 
-uspec = bracketed given <|> one
+uspec = given <|> omitted
   where
-    one = pure $ Unit [] []
+    omitted = pure $ Unit M.empty
 
-    given = Unit <$> line <*> ((slash >> line) <|> pure [])
+    given = bracketed $ do
+      above <- line
+      below <- map (fmap negate) <$> (slash >> line) <|> pure []
+      let a = M.unionsWith (+) $ map (uncurry M.singleton) above
+      let b = M.unionsWith (+) $ map (uncurry M.singleton) below
+      pure . Unit . M.filter (/=0) $ M.unionWith (+) a b
       where
         slash = lexeme $ char '/'
 
-        line :: Parser [(String, Word)]
+        line :: Parser [(String, Int)]
         line = many $ lexeme $ (,) <$> many1 letter <*> (bounded <|> pure 1)
+
+
+
+numeral :: Parser Double
+
+numeral = lexeme $ choice
+  [ char '-' >> negate <$> floating2 True
+  , floating2 True
+  ]
 
 
 
 quantity :: Parser Expression
 
-quantity = Quantity <$> lexeme bounded <*> uspec
+quantity = Quantity <$> (Q <$> numeral <*> uspec)
 
 
 
@@ -89,9 +105,9 @@ singleton = quantity <|> parenthesised expression
 expression :: Parser Expression
 
 expression = do
-  first <- singleton
-  rest <- many $ (,) <$> operator <*> singleton
-  case shuntingYard (fst . table) (snd . table) Apply first rest of
+  hd <- singleton
+  tl <- many $ (,) <$> operator <*> singleton
+  case shuntingYard (fst . table) (snd . table) Apply hd tl of
     Left conflict -> fail $ "Conflict: " ++ show conflict
     Right e -> pure e
 

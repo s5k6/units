@@ -17,7 +17,9 @@ main = do
       print m
 
     Right e -> do
+      {-
       putStr "AST: "
       print e
+      -}
       putStr "Value: "
       print $ eval e

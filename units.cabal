@@ -28,7 +28,7 @@ common shared-properties
                        -Wwarn=name-shadowing
 
 
-executable sycalc
+executable units
   import:              shared-properties
 
   hs-source-dirs:      src
@@ -40,3 +40,5 @@ executable sycalc
                      , parsec
                      , shuntingYard
                      , robust-int
+                     , containers
+                     , parsec-numbers
