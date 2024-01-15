@@ -61,12 +61,10 @@ bracketed p = lexeme (char '[') *> p <* lexeme (char ']')
 
 
 
-uspec :: Parser Unit
+unit :: Parser Unit
 
-uspec = given <|> omitted
+unit = given <|> pure one
   where
-    omitted = pure $ Unit M.empty
-
     given = bracketed $ do
       above <- line
       below <- map (fmap negate) <$> (slash >> line) <|> pure []
@@ -92,7 +90,7 @@ numeral = lexeme $ choice
 
 quantity :: Parser Expression
 
-quantity = Quantity <$> (Q <$> numeral <*> uspec)
+quantity = Quantity <$> (Q <$> numeral <*> unit)
 
 
 
