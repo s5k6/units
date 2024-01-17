@@ -3,7 +3,29 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages: []
+packages:
+- completed:
+    commit: 3e3216ded51bd973cb5d6ba25dccf50445d53011
+    git: https://github.com/s5k6/robust-int
+    name: robust-int
+    pantry-tree:
+      sha256: 73bc7259972aba459e0012c2c4a63958d71ced412c69a72985769218772262fa
+      size: 662
+    version: 1.0.0
+  original:
+    commit: 3e3216ded51bd973cb5d6ba25dccf50445d53011
+    git: https://github.com/s5k6/robust-int
+- completed:
+    commit: 325753ddc3ce92ae497d1d8574e5147ec573eab8
+    git: https://github.com/s5k6/shuntingYard
+    name: shuntingYard
+    pantry-tree:
+      sha256: 8a0cb93335aaf7fb5bbf19607eb7a1a3f2d857ef8f287c1853a6afd24a9f37ba
+      size: 379
+    version: 1.0.0
+  original:
+    commit: 325753ddc3ce92ae497d1d8574e5147ec573eab8
+    git: https://github.com/s5k6/shuntingYard
 snapshots:
 - completed:
     sha256: e176944bc843f740e05242fa7a66ca1f440c127e425254f7f1257f9b19add23f
